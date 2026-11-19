@@ -4,7 +4,8 @@ name: Build AJ Money Management APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -28,11 +29,16 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Extract Android Project
+        run: |
+          unzip -o AJ_Money_Management_GitHub_Android_Project.zip -d build-source
+
       - name: Build APK
-        run: gradle assembleDebug
+        run: |
+          gradle -p build-source/AJ_Money_Management_Android assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AJ-Money-Management-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: build-source/AJ_Money_Management_Android/app/build/outputs/apk/debug/app-debug.apk
