@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F172A">
+<title>AJ Money Management ৳</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+body { background: #F3F4F6; color: #111827; padding-bottom: 20px; }
+.header { background: linear-gradient(135deg, #064E3B, #10B981); color: white; padding: 24px 16px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.header h1 { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+.header p { font-size: 13px; color: #D1FAE5; margin-top: 4px; }
+.container { padding: 12px; max-width: 500px; margin: 0 auto; }
+.card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #111827; display: flex; align-items: center; gap: 6px;}
+label { display: block; font-size: 13px; color: #4B5563; font-weight: 600; margin: 10px 0 4px; }
+input { width: 100%; height: 48px; border: 1px solid #D1D5DB; background: #F9FAFB; border-radius: 10px; padding: 0 12px; font-size: 16px; color: #111827; outline: none; transition: 0.2s; }
+input:focus { border-color: #10B981; background: white; box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+button { width: 100%; height: 56px; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; color: white; cursor: pointer; margin-top: 12px; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+button:active { transform: scale(0.98); }
+.btn-start { background: linear-gradient(135deg, #059669, #10B981); }
+.btn-win { background: linear-gradient(135deg, #0284C7, #38BDF8); }
+.btn-loss { background: linear-gradient(135deg, #DC2626, #EF4444); }
+.row-btn { display: flex; gap: 10px; margin-top: 12px; }
+.row-btn button { width: 50%; height: 64px; font-size: 18px; margin-top: 0; }
+.status-box { text-align: center; padding: 14px; background: #F3F4F6; border-radius: 12px; font-weight: 700; font-size: 15px; margin-bottom: 12px; border: 1px solid #E5E7EB; }
+.progress-bar { width: 100%; height: 12px; background: #E5E7EB; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+.progress-fill { height: 100%; background: #10B981; width: 0%; transition: width 0.3s ease; }
+.stats { display: flex; gap: 8px; margin-bottom: 12px; }
+.stat { flex: 1; padding: 12px 8px; border-radius: 12px; text-align: center; border: 1px solid #E5E7EB; }
+.stat-label { font-size: 12px; font-weight: 700; margin-bottom: 4px;}
+.stat-value { font-size: 18px; font-weight: 800; }
+.stat-cap { background: #F0FDF4; border-color: #BBF7D0; }
+.stat-cap .stat-label { color: #166534; }
+.stat-cap .stat-value { color: #15803D; }
+.stat-win { background: #F0F9FF; border-color: #BAE6FD; }
+.stat-win .stat-label, .stat-win .stat-value { color: #0369A1; }
+.stat-loss { background: #FEF2F2; border-color: #FECACA; }
+.stat-loss .stat-label, .stat-loss .stat-value { color: #B91C1C; }
+.next-bet { background: linear-gradient(135deg, #FEF3C7, #FDE68A); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 12px; border: 1px solid #FCD34D; }
+.next-bet .label { font-size: 14px; color: #92400E; font-weight: 700; text-transform: uppercase;}
+.next-bet .value { font-size: 32px; font-weight: 900; color: #B45309; margin-top: 4px; }
+.history-list { max-height: 300px; overflow-y: auto; }
+.history-item { padding: 10px; border-bottom: 1px solid #F3F4F6; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+.history-item.win { border-left: 4px solid #38BDF8; background: #F0F9FF; }
+.history-item.loss { border-left: 4px solid #EF4444; background: #FEF2F2; }
+.history-item:last-child { border-bottom: none; }
+.empty { text-align: center; color: #9CA3AF; padding: 20px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>👑 AJ Money Management ৳</h1>
+  <p>আপনার ট্রেডিং ও মানি ম্যানেজমেন্ট সঙ্গী</p>
+</div>
+<div class="container">
+  <div class="card">
+    <div class="card-title">⚙️ কনফিগারেশন</div>
+    <label>💵 শুরুর ক্যাপিটাল (৳)</label>
+    <input type="number" id="capital" value="5000" inputmode="decimal">
+    <label>🔢 সর্বোচ্চ ট্রেড (Max Trades)</label>
+    <input type="number" id="maxTrades" value="5" inputmode="numeric">
+    <label>🎯 Win Trades (কত WIN লাগবে)</label>
+    <input type="number" id="winTrades" value="2" inputmode="numeric">
+    <label>📊 Percentage (1.8 = 80%)</label>
+    <input type="number" id="percentage" value="1.8" step="0.01" inputmode="decimal">
+    <button class="btn-start" onclick="startSession()">✅ হিসাব শুরু করুন</button>
+  </div>
+  <div class="card">
+    <div class="status-box" id="status">অনুগ্রহ করে হিসাব শুরু করুন</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  </div>
+  <div class="stats">
+    <div class="stat stat-cap"><div class="stat-label">💰 ক্যাপিটাল</div><div class="stat-value" id="statCapital">৳0.00</div></div>
+    <div class="stat stat-win"><div class="stat-label">✅ WIN</div><div class="stat-value" id="statWins">0</div></div>
+    <div class="stat stat-loss"><div class="stat-label">❌ LOSS</div><div class="stat-value" id="statLosses">0</div></div>
+  </div>
+  <div class="next-bet">
+    <div class="label">👉 পরের বেট</div>
+    <div class="value" id="nextBet">৳ 0.00</div>
+  </div>
+  <div class="row-btn">
+    <button class="btn-win" onclick="recordTrade(true)">✅ WIN</button>
+    <button class="btn-loss" onclick="recordTrade(false)">❌ LOSS</button>
+  </div>
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">📜 ট্রেড হিস্ট্রি</div>
+    <div class="history-list" id="history"><div class="empty">এখনো কোনো ট্রেড নেই</div></div>
+  </div>
+</div>
+<script>
+let capital = 5000, maxTrades = 5, winTrades = 2, payoutRatio = 1.8;
+let wins = 0, losses = 0, currentBet = 0, target = 10000;
+let historyList = [];
+function fmt(n) {
+  return n.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function calculateNextBet() {
+  const winsRemaining = winTrades - wins;
+  const tradesRemaining = maxTrades - (wins + losses);
+  if (winsRemaining <= 0 || tradesRemaining <= 0) return 0;
+  let bet = (target - capital) / ((payoutRatio - 1) * winsRemaining);
+  if (bet > capital * 0.5) bet = capital * 0.5;
+  if (bet < 0) bet = 0;
+  return bet;
+}
+function startSession() {
+  capital = parseFloat(document.getElementById('capital').value) || 0;
+  maxTrades = parseInt(document.getElementById('maxTrades').value) || 5;
+  winTrades = parseInt(document.getElementById('winTrades').value) || 2;
+  payoutRatio = parseFloat(document.getElementById('percentage').value) || 1.8;
+  if (capital <= 0) { alert('ক্যাপিটাল ০ এর বেশি দিন'); return; }
+  if (winTrades > maxTrades) { alert('Win Trades সর্বোচ্চ ট্রেডের চেয়ে বেশি হতে পারে না'); return; }
+  if (payoutRatio <= 1) { alert('Percentage ১ এর বেশি দিন (যেমন 1.8)'); return; }
+  target = capital * 2;
+  wins = 0; losses = 0; currentBet = 0; historyList = [];
+  document.getElementById('history').innerHTML = '<div class="empty">এখনো কোনো ট্রেড নেই</div>';
+  updateUI();
+}
+function recordTrade(isWin) {
+  if (wins >= winTrades) { alert('🎯 Win Trades সম্পূর্ণ! নতুন করে শুরু করুন'); return; }
+  if (wins + losses >= maxTrades) { alert('সাইকেল শেষ! নতুন করে শুরু করুন'); return; }
+  currentBet = calculateNextBet();
+  if (currentBet <= 0) { alert('এখন বেট নেওয়া সম্ভব না'); return; }
+  const betUsed = currentBet;
+  if (isWin) { capital += betUsed * (payoutRatio - 1); wins++; }
+  else { capital = Math.max(0, capital - betUsed); losses++; }
+  historyList.unshift({win: isWin, bet: betUsed, capital: capital});
+  renderHistory();
+  updateUI();
+}
+function updateUI() {
+  document.getElementById('statCapital').textContent = '৳' + fmt(capital);
+  document.getElementById('statWins').textContent = wins;
+  document.getElementById('statLosses').textContent = losses;
+  const totalTrades = wins + losses;
+  document.getElementById('progress').style.width = (totalTrades / maxTrades) * 100 + '%';
+  currentBet = calculateNextBet();
+  document.getElementById('nextBet').textContent = '৳ ' + fmt(currentBet);
+  const status = document.getElementById('status');
+  if (wins >= winTrades) {
+    status.textContent = '🎯 সফল! ফাইনাল ক্যাপিটাল: ৳' + fmt(capital);
+    status.style.background = '#D1FAE5'; status.style.color = '#065F46';
+  } else if (totalTrades >= maxTrades) {
+    status.textContent = '✔️ সাইকেল শেষ — আবার শুরু করুন';
+    status.style.background = '#FEF3C7'; status.style.color = '#92400E';
+  } else if (capital <= 0) {
+    status.textContent = '💀 ক্যাপিটাল শেষ';
+    status.style.background = '#FEE2E2'; status.style.color = '#991B1B';
+  } else {
+    status.textContent = 'ট্রেড ' + (totalTrades + 1) + ' / ' + maxTrades;
+    status.style.background = '#F3F4F6'; status.style.color = '#374151';
+  }
+}
+function renderHistory() {
+  const container = document.getElementById('history');
+  if (historyList.length === 0) {
+    container.innerHTML = '<div class="empty">এখনো কোনো ট্রেড নেই</div>';
+    return;
+  }
+  container.innerHTML = historyList.map(function(item) {
+    const icon = item.win ? '✅ WIN' : '❌ LOSS';
+    const cls = item.win ? 'win' : 'loss';
+    const color = item.win ? '#0284C7' : '#DC2626';
+    return '<div class="history-item ' + cls + '">' +
+      '<div style="color:' + color + '; font-weight:700;">' + icon + '</div>' +
+      '<div style="text-align:right; font-size:12px;">বেট: ৳' + fmt(item.bet) + '<br>ক্যাপ: ৳' + fmt(item.capital) + '</div>' +
+      '</div>';
+  }).join('');
+}
+window.onload = function() { startSession(); };
+</script>
+</body>
+</html>
